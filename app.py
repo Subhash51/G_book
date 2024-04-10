@@ -5,6 +5,21 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/Gbook"
 mongo = PyMongo(app)
 
+@app.route('/insert_data', methods=['POST'])
+def insert_data():
+    username = request.form['username']
+    print(username,flush=True)
+    email = request.form['email']
+    password = request.form['password']
+    confirm_password = request.form['confirmPassword']
+
+    if password != confirm_password:
+        return jsonify({"message": "Passwords do not match"})
+
+    collection = mongo.db.users  
+    result = collection.insert_one({"username": username, "email": email, "password": password})
+
+    return redirect('/main') 
 
 
 @app.route('/')
